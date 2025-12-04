@@ -1,1 +1,1 @@
-# shablon
+# vash-admin
