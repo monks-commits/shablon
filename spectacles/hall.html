@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вибір місць — Театральні квитки онлайн</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+  <!-- Шапка -->
+  <div id="site-header"></div>
+  <script type="module" src="/scripts/include.js"></script>
+
+  <main class="main">
+
+    <!-- Заголовок сторінки -->
+    <section class="page-header">
+      <div class="container page-header__inner">
+        <h1 id="hall-title" class="page-title">Вибір місць</h1>
+        <p id="hall-meta" class="page-subtitle"></p>
+      </div>
+    </section>
+
+    <!-- Схема залу + підсумок -->
+    <section class="section">
+      <div class="container">
+        <div class="card">
+          <div class="checkout__grid-two">
+            <!-- Схема залу -->
+            <div>
+              <h2 style="margin:0 0 8px;font-size:18px;">Схема залу</h2>
+
+              <div class="hall-wrapper">
+                <div class="hall-scroll">
+                  <div class="hall-inner">
+                    <div id="hall"></div>
+                  </div>
+                </div>
+                <p class="meta" style="margin-top:8px;">
+                  Натисніть на місця, щоб додати або прибрати їх з замовлення.
+                </p>
+
+                <div id="rowPrices" class="row-price-list"></div>
+              </div>
+            </div>
+
+            <!-- Підсумок замовлення -->
+            <aside>
+              <h2 style="margin:0 0 8px;font-size:18px;">Ваше замовлення</h2>
+              <p id="selShow" class="meta"></p>
+              <p id="selSeats" class="meta">Обрані місця: —</p>
+              <p id="selAmount" class="meta">Сума: 0 грн</p>
+
+              <button id="toOrderBtn" class="btn btn--primary" disabled>
+                Перейти до оформлення
+              </button>
+
+              <p class="meta" style="margin-top:10px;font-size:13px;">
+                Кнопка стане активною, коли ви оберете хоча б одне місце.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Підвал -->
+  <div id="site-footer"></div>
+
+  <script>
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const slug = params.get("show") || "";
+
+      const hallTitleEl = document.getElementById("hall-title");
+      const hallMetaEl  = document.getElementById("hall-meta");
+      const selShowEl   = document.getElementById("selShow");
+      const selSeatsEl  = document.getElementById("selSeats");
+      const selAmountEl = document.getElementById("selAmount");
+      const toOrderBtn  = document.getElementById("toOrderBtn");
+      const hallEl      = document.getElementById("hall");
+      const rowPricesEl = document.getElementById("rowPrices");
+
+      if (!slug) {
+        hallTitleEl.textContent = "Вибір місць";
+        hallMetaEl.textContent  = "Параметр show не вказано.";
+        toOrderBtn.disabled     = true;
+        return;
+      }
+
+      let showInfo = null;
+
+      // Підтягуємо опис показу з /data/afisha.json (якщо є)
+      try {
+        const r = await fetch("/data/afisha.json", { cache: "no-store" });
+        if (r.ok) {
+          const items = await r.json();
+          showInfo = (items || []).find(x => (x.show || "") === slug) || null;
+        }
+      } catch (e) {
+        console.warn("Не вдалося завантажити afisha.json:", e);
+      }
+
+      const title = showInfo?.title || slug;
+      const metaParts = [
+        showInfo?.city,
+        showInfo?.theatre,
+        showInfo?.stage,
+        showInfo?.date,
+        showInfo?.time
+      ].filter(Boolean);
+
+      hallTitleEl.textContent = title;
+      hallMetaEl.textContent  = metaParts.join(" • ");
+      selShowEl.textContent   = "Вистава: " + title;
+
+      // ----- Демонстраційна схема залу -----
+      // 10 рядів × 12 місць, ціна змінюється від ряду
+      const rows = [
+        { row: 1, seats: 12, price: 300 },
+        { row: 2, seats: 12, price: 300 },
+        { row: 3, seats: 12, price: 280 },
+        { row: 4, seats: 12, price: 260 },
+        { row: 5, seats: 12, price: 240 },
+        { row: 6, seats: 12, price: 220 },
+        { row: 7, seats: 12, price: 220 },
+        { row: 8, seats: 12, price: 200 },
+        { row: 9, seats: 12, price: 200 },
+        { row: 10, seats: 12, price: 180 }
+      ];
+
+      function buildHallHTML() {
+        return rows.map(r => {
+          const seats = Array.from({ length: r.seats }, (_, i) => {
+            const seat = i + 1;
+            return `
+              <button
+                type="button"
+                class="seat"
+                data-row="${r.row}"
+                data-seat="${seat}"
+                data-price="${r.price}"
+              >
+                ${seat}
+              </button>
+            `;
+          }).join("");
+
+          return `
+            <div class="hall-row" data-row="${r.row}"
+                 style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <div class="row-label" style="width:26px;font-size:12px;color:#4b5563;">
+                ${r.row}
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${seats}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function buildRowPricesHTML() {
+        return rows.map(r => `
+          <div class="row-price">
+            <span>Ряд ${r.row}</span>
+            <span class="dots"></span>
+            <b>${r.price} грн</b>
+          </div>
+        `).join("");
+      }
+
+      hallEl.innerHTML = buildHallHTML();
+      rowPricesEl.innerHTML = buildRowPricesHTML();
+
+      // ----- Логіка вибору місць -----
+      const selected = new Map(); // key: "row-seat" -> {row, seat, price}
+
+      function updateSummary() {
+        const seatsArr = Array.from(selected.values())
+          .sort((a, b) => a.row - b.row || a.seat - b.seat);
+
+        if (!seatsArr.length) {
+          selSeatsEl.textContent  = "Обрані місця: —";
+          selAmountEl.textContent = "Сума: 0 грн";
+          toOrderBtn.disabled = true;
+          return;
+        }
+
+        const seatsStr = seatsArr
+          .map(s => `${s.row} ряд, місце ${s.seat}`)
+          .join("; ");
+
+        const total = seatsArr.reduce((sum, s) => sum + s.price, 0);
+
+        selSeatsEl.textContent  = "Обрані місця: " + seatsStr;
+        selAmountEl.textContent = "Сума: " + total + " грн";
+        toOrderBtn.disabled = false;
+      }
+
+      hallEl.addEventListener("click", (e) => {
+        const t = e.target;
+        if (!(t instanceof HTMLElement)) return;
+        if (!t.classList.contains("seat")) return;
+        if (t.classList.contains("taken")) return;
+
+        const row  = Number(t.dataset.row || "0");
+        const seat = Number(t.dataset.seat || "0");
+        const price = Number(t.dataset.price || "0");
+        if (!row || !seat) return;
+
+        const key = row + "-" + seat;
+
+        if (selected.has(key)) {
+          selected.delete(key);
+          t.classList.remove("selected");
+        } else {
+          selected.set(key, { row, seat, price });
+          t.classList.add("selected");
+        }
+
+        updateSummary();
+      });
+
+      // ----- Переход на оформлення (order.html) -----
+      toOrderBtn.addEventListener("click", () => {
+        if (selected.size === 0) return;
+
+        const seatsArr = Array.from(selected.values())
+          .sort((a, b) => a.row - b.row || a.seat - b.seat);
+
+        const seatsParam = seatsArr
+          .map(s => `${s.row}-${s.seat}`)
+          .join(",");
+
+        const total = seatsArr.reduce((sum, s) => sum + s.price, 0);
+
+        const url = new URL(location.origin + "/order.html");
+        url.searchParams.set("show", slug);
+        url.searchParams.set("title", title);
+        url.searchParams.set("seats", seatsParam);
+        url.searchParams.set("amount", String(total));
+
+        location.href = url.toString();
+      });
+
+      // На всякий случай — инициализация
+      updateSummary();
+    })();
+  </script>
+
+</body>
+</html>
