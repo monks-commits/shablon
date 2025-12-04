@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="uk">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -6,28 +7,42 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <body>
-  <main class="logo-page">
-    <img src="/images/logo-vash-admin.jpg" alt="Ваш Адмін — квитки без комісій" class="main-logo" />
-  </main>
-</body>
 
-
+  <!-- Шапка (подтягивается из header.html через include.js) -->
   <div id="site-header"></div>
   <script type="module" src="/scripts/include.js"></script>
 
+  <!-- Основной контент -->
   <main class="main">
-    <section class="section" style="text-align:center">
-      <h2>Офіційний продаж театральних квитків</h2>
-      <p class="meta">Без комісій, за ціною каси театру</p>
-      <p style="margin-top:16px">
-        <a class="btn" href="/afisha.html">Перейти до афіші</a>
-        <a class="btn secondary" href="/theatres.html" style="margin-left:8px">Переглянути театри</a>
-      </p>
-    </section>
+    <section class="hero">
+      <div class="container hero__inner">
 
-    
+        <div class="hero__content">
+          <h1 class="hero__title">Ваш Адмін — театральні квитки</h1>
+          <p class="hero__subtitle">
+            Офіційний продаж театральних квитків без комісій, 
+            за ціною каси театру. Працюємо з театрами Дніпра та Кривого Рогу.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="/afisha.html">Перейти до афіші</a>
+            <a class="btn btn--secondary" href="/theatres.html">Переглянути театри</a>
+          </div>
+        </div>
+
+        <div class="hero__media">
+          <img
+            src="/images/logo-vash-admin.jpg"
+            alt="Ваш Адмін — квитки без комісій"
+            class="hero__image"
+          />
+        </div>
+
+      </div>
+    </section>
   </main>
 
+  <!-- Подвал (подтягивается из footer.html) -->
   <div id="site-footer"></div>
-</body></html>
+
+</body>
+</html>
