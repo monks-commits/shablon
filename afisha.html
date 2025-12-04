@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Афіша — Ваш Адмін</title>
+  <title>Афіша — Театральні квитки онлайн</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
 
   <main class="main">
 
-    <!-- Заголовок страницы -->
+    <!-- Заголовок сторінки -->
     <section class="page-header">
       <div class="container page-header__inner">
         <h1 class="page-title">Афіша</h1>
@@ -24,21 +24,19 @@
       </div>
     </section>
 
-    <!-- Фильтры и сетка афиши -->
+    <!-- Фільтри + список подій -->
     <section class="section">
       <div class="container">
 
-        <!-- Фильтры по місту -->
-        <div class="filters">
+        <!-- Фільтри по містах (формуються з даних) -->
+        <div id="filters" class="filters">
           <button class="pill pill--active" data-city="all">Всі міста</button>
-          <button class="pill" data-city="Дніпро">Дніпро</button>
-          <button class="pill" data-city="Кривий Ріг">Кривий Ріг</button>
         </div>
 
-        <!-- Сетка спектаклей -->
+        <!-- Сітка подій -->
         <div id="grid" class="grid-events"></div>
 
-        <!-- Сообщение "пусто" -->
+        <!-- Повідомлення "порожньо" -->
         <p id="empty" class="meta meta--empty" style="display:none">
           Подій за вибраним фільтром поки немає.
         </p>
@@ -48,16 +46,15 @@
 
   </main>
 
-  <!-- Подвал -->
+  <!-- Підвал -->
   <div id="site-footer"></div>
 
   <script>
   (async () => {
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
-    const pills = document.querySelectorAll('.pill');
+    const filters = document.getElementById('filters');
 
-    // Загружаем афишу
     let items = [];
     try {
       const res = await fetch('/data/afisha.json', { cache: 'no-store' });
@@ -65,6 +62,24 @@
     } catch (e) {
       items = [];
     }
+
+    // Унікальні міста з афіші
+    const cities = Array.from(
+      new Set(
+        items
+          .map(x => (x.city || '').trim())
+          .filter(Boolean)
+      )
+    );
+
+    // Додаємо кнопки по містах
+    cities.forEach(city => {
+      const btn = document.createElement('button');
+      btn.className = 'pill';
+      btn.dataset.city = city;
+      btn.textContent = city;
+      filters.appendChild(btn);
+    });
 
     function cardHTML(s) {
       const poster = s.poster ? '/' + s.poster.replace(/^\/+/, '') : '';
@@ -75,7 +90,14 @@
 
       return `
         <article class="card event-card">
-          ${poster ? `<img class="event-card__poster" src="${poster}" alt="${s.title || ''}" onerror="this.style.display='none'">` : ''}
+          ${poster ? `
+            <img
+              class="event-card__poster"
+              src="${poster}"
+              alt="${s.title || ''}"
+              onerror="this.style.display='none'"
+            >
+          ` : ''}
           <div class="event-card__body">
             <h2 class="event-card__title">${s.title || ''}</h2>
             ${dateTime ? `<p class="meta event-card__meta">${dateTime}</p>` : ''}
@@ -99,22 +121,33 @@
       empty.style.display = data.length ? 'none' : 'block';
     }
 
-    // Переключение фильтров
-    pills.forEach(p => {
-      p.addEventListener('click', () => {
-        pills.forEach(x => x.classList.remove('pill--active'));
-        p.classList.add('pill--active');
-        render(p.dataset.city);
+    function setActive(city) {
+      const buttons = filters.querySelectorAll('.pill');
+      buttons.forEach(b => {
+        b.classList.toggle(
+          'pill--active',
+          b.dataset.city === city || (city === 'all' && b.dataset.city === 'all')
+        );
       });
+    }
+
+    // Клік по фільтрам
+    filters.addEventListener('click', (e) => {
+      if (e.target.matches('.pill')) {
+        const city = e.target.dataset.city;
+        setActive(city);
+        render(city);
+      }
     });
 
-    // Если пришли ?city=…
+    // ?city=... у рядку адреси
     const q = new URLSearchParams(location.search);
     const c = q.get('city');
-    if (c) {
-      pills.forEach(p => p.classList.toggle('pill--active', p.dataset.city === c));
+    if (c && cities.includes(c)) {
+      setActive(c);
       render(c);
     } else {
+      setActive('all');
       render('all');
     }
   })();
