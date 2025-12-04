@@ -1,131 +1,366 @@
 /* /styles.css */
-* {
+
+/* ========== БАЗОВЫЕ НАСТРОЙКИ ========== */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
+
 body {
   margin: 0;
   background: #f4f5f7;
   color: #111827;
 }
+
+a {
+  color: #155EEF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Контейнер и общий layout */
+
 .container {
   width: min(1100px, 100%);
   margin: 0 auto;
   padding: 0 16px;
 }
+
+.main {
+  padding-bottom: 40px;
+}
+
+.section {
+  padding: 24px 0;
+}
+
+.meta {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Текстовый блок (юрка, "Про нас" и т.п.) */
+.content {
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.content h1,
+.content h2,
+.content h3 {
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.content p {
+  margin: 0 0 12px;
+}
+
+.content ul,
+.content ol {
+  padding-left: 20px;
+  margin: 0 0 12px;
+}
+
+/* ========== ШАПКА ========== */
+
+.header,
 .site-header {
   background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
 }
-.header-inner {
+
+.header-inner,
+.header__inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  min-height: 60px;
 }
+
+.header__brand,
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.header__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.header__title {
+  display: flex;
+  flex-direction: column;
+}
+
+.header__name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.header__tagline {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* старая .logo — оставляем для совместимости */
 .logo {
   font-weight: 700;
   text-decoration: none;
   color: #111827;
 }
+
+/* Навигация */
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav__list {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav__link,
 .nav a {
-  margin-left: 16px;
   text-decoration: none;
   color: #374151;
-}
-.site-footer {
-  background: #111827;
-  color: #fff;
-  padding: 24px 0 0;
-  margin-top: 48px;
-}
-.footer-grid {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.footer-bottom {
-  text-align: center;
-  padding: 16px 0;
-  margin-top: 16px;
-  background: rgba(0,0,0,.3);
   font-size: 14px;
 }
-.button-primary {
-  background: #2563eb;
-  border: none;
-  color: #fff;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
+
+.nav__link:hover,
+.nav a:hover {
+  color: #111827;
 }
-.button-primary:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
+
+/* Мобильная адаптация хедера */
+
+@media (max-width: 768px) {
+  .header-inner,
+  .header__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 0;
+    gap: 8px;
+  }
+
+  .nav {
+    width: 100%;
+  }
+
+  .nav__list {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 }
+
+/* ========== HERO / ГЛАВНАЯ ========== */
+
+.hero {
+  padding: 40px 0 24px;
+}
+
+.hero__inner {
+  display: grid;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+}
+
+.hero__title {
+  margin: 0 0 12px;
+  font-size: 28px;
+}
+
+.hero__subtitle {
+  margin: 0 0 18px;
+  font-size: 15px;
+  color: #4b5563;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hero__media {
+  display: flex;
+  justify-content: center;
+}
+
+.hero__image {
+  max-width: 320px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+}
+
+/* ========== ЗАГОЛОВОК СТРАНИЦЫ ========== */
+
+.page-header {
+  padding: 24px 0 12px;
+}
+
+.page-header__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ========== КАРТОЧКИ, КНОПКИ, ФОРМЫ ========== */
+
 .card {
   background: #fff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 10px 25px rgba(15,23,42,0.05);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
   margin-bottom: 20px;
 }
 
-/* зал */
-.hall-wrapper {
-  background: #e5e7eb;
-  border-radius: 16px;
-  padding: 16px;
-  margin: 20px 0;
-  min-height: 220px;
-}
-.hall-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.seat {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background: #fff;
-  border: 1px solid #d1d5db;
-  display: flex;
+/* Кнопки */
+
+.btn,
+button.primary,
+.btn-primary,
+.button-primary,
+#pay-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  cursor: pointer;
-}
-.seat.selected {
   background: #2563eb;
   color: #fff;
-  border-color: #2563eb;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
-.seat.taken {
+
+.btn:hover,
+button.primary:hover,
+.btn-primary:hover,
+.button-primary:hover,
+#pay-btn:hover {
+  background: #1d4ed8;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.btn:disabled,
+button.primary:disabled,
+.btn-primary:disabled,
+.button-primary:disabled,
+#pay-btn:disabled {
   background: #9ca3af;
-  color: #fff;
   cursor: not-allowed;
+  transform: none;
 }
+
+/* Модификаторы кнопок */
+
+.btn--primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn--secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn--secondary:hover {
+  background: #d1d5db;
+}
+
+/* Формы */
+
 .form-row {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 6px;
   margin-bottom: 12px;
 }
+
 .form-row label {
-  display: block;
   font-size: 14px;
-  margin-bottom: 4px;
 }
-.form-control {
+
+.form-row input,
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+textarea {
   width: 100%;
-  height: 40px;
+  min-height: 40px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
-  padding: 6px 10px;
-  font-size: 15px;
+  padding: 8px 10px;
+  font-size: 14px;
   background: #fff;
 }
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  margin: 12px 0;
+}
+
+.checkbox input {
+  margin-top: 3px;
+}
+
+/* Бейдж и ошибки */
+
 .badge-ok {
   background: #ecfdf3;
   border: 1px solid #22c55e;
@@ -135,6 +370,7 @@ body {
   margin-top: 8px;
   font-size: 14px;
 }
+
 .error-box {
   background: #fef2f2;
   border: 1px solid #fecaca;
@@ -143,28 +379,260 @@ body {
   padding: 10px 14px;
   margin-top: 14px;
 }
-#pay-btn,
-.btn-primary,
-button.primary {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: .15s;
+
+/* ========== АФИША ========== */
+
+.grid-events {
+  display: grid;
+  gap: 16px;
 }
 
-#pay-btn:hover {
-  background: #1d4ed8;
+@media (min-width: 700px) {
+  .grid-events {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
+
+@media (min-width: 1024px) {
+  .grid-events {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+/* Пилюли-фильтры городов */
+
+.pill {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pill:hover {
+  background: #e5e7eb;
+}
+
+.pill--active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+/* Карточка события */
+
+.event-card {
+  display: grid;
+  gap: 10px;
+}
+
+.event-card__poster {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #e5e7eb;
+}
+
+.event-card__body {
+  display: grid;
+  gap: 4px;
+}
+
+.event-card__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.event-card__meta {
+  font-size: 13px;
+}
+
+.event-card__actions {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ========== СТРАНИЦА ВЫСТАВЫ (show.html) ========== */
+
+.show-hero {
+  display: grid;
+  gap: 18px;
+}
+
+@media (min-width: 900px) {
+  .show-hero {
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  }
+}
+
+.show-hero__poster {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #e5e7eb;
+}
+
+.show-hero__title {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 24px;
+}
+
+.show-hero__meta {
+  margin-bottom: 12px;
+}
+
+.show-hero__description {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.show-hero__actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ========== ORDER / CHECKOUT / THANKS ========== */
+
+.order-form {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* Checkout */
+
+.checkout {
+  display: grid;
+  gap: 18px;
+}
+
+.checkout__card {
+  margin-bottom: 0;
+}
+
+.checkout__title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.checkout__line {
+  margin-top: 4px;
+}
+
+.checkout__grid-two {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .checkout__grid-two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.checkout__field {
+  margin-top: 12px;
+}
+
+.checkout__label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.checkout__text {
+  margin-bottom: 10px;
+}
+
+.checkout__error {
+  display: none;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #7f1d1d;
+  font-size: 14px;
+}
+
+.checkout__error--visible {
+  display: block;
+}
+
+/* ========== ФУТЕР ========== */
+
+.site-footer,
+.footer {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 30px 0 12px;
+  font-size: 14px;
+  color: #374151;
+  margin-top: 40px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 16px;
+}
+
+.footer-col {
+  flex: 1 1 260px;
+  min-width: 220px;
+}
+
+.footer-col h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: #111827;
+}
+
+.footer-col a {
+  color: #155EEF;
+}
+
+.footer-col a:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 20px;
+  padding-top: 10px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* ========== ЛОГО-СТРАНИЦА (если нужно) ========== */
 
 .logo-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 80vh;
   background-color: #f8f5f2;
   text-align: center;
 }
@@ -200,14 +668,98 @@ button.primary {
   transform: scale(1.04);
 }
 
-/* Ровные контуры кружков при любом масштабе */
+/* ========== ХОЛЛ / СХЕМА ЗАЛА ========== */
+
+.hall-wrapper {
+  background: #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 20px 0;
+  min-height: 220px;
+}
+
+.hall-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.seat {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.seat.selected {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.seat.taken {
+  background: #9ca3af;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+/* SVG-сиденья */
+
 svg .seat {
   vector-effect: non-scaling-stroke;
   stroke-width: 1.2px;
   stroke: #444;
 }
 
-/* Блок со списком цен по рядам */
+/* Хор. скролл для схемы */
+
+.hall-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hall-inner {
+  width: max(760px, 100%);
+}
+
+/* При необходимости глобальный горизонтальный скролл */
+body,
+html,
+.main {
+  overflow-x: auto !important;
+}
+
+/* Мобильные размеры в зале */
+
+@media (max-width: 480px) {
+  .seat {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .row-label {
+    width: 22px;
+    flex: 0 0 22px;
+    font-size: 12px;
+  }
+  .pass-gap {
+    width: 24px;
+  }
+  .hall-inner {
+    width: max(680px, 100%);
+  }
+}
+
+/* Цены по рядам */
+
 .row-price-list {
   margin-top: 14px;
   padding: 12px 14px;
@@ -216,69 +768,26 @@ svg .seat {
   font-size: 14px;
 }
 
-/* Одна строка: Ряд — Цена */
 .row-price {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  border-bottom: 1px dashed #e2e2e2;
+  font-size: 14px;
+  color: #0f172a;
+  border-bottom: 1px dotted #e5e7eb;
 }
 
 .row-price:last-child {
   border-bottom: 0;
 }
 
-/* Точки-разделитель (приятная «линейка») */
 .row-price .dots {
   flex: 1 1 auto;
-  border-bottom: 1px dotted #d7d7d7;
-  transform: translateY(-2px);
+  border-bottom: 1px dotted #e5e7eb;
+  height: 0;
 }
 
-/* Чуть крупнее цена */
 .row-price b {
   font-weight: 700;
 }
-/* --- Горизонтальный скролл только для схемы зала --- */
-.hall-scroll{
-  overflow-x: auto;                /* включаем горизонт-скролл */
-  overflow-y: visible;
-  -webkit-overflow-scrolling: touch; /* плавная прокрутка на iOS */
-}
-
-/* Внутри делаем “полотно” схемы широким, чтобы было что скроллить */
-.hall-inner{
-  width: max(760px, 100%);         /* базовая ширина полотна */
-}
-
-/* Если где-то в базовых стилях запрещён горизонт-скролл страницам —
-   точечно разрешим минимум на этой странице */
-body, html, .main{
-  overflow-x: auto !important;
-}
-
-/* --- Мобильная подстройка размеров --- */
-@media (max-width: 480px){
-  .seat{
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    font-size: 13px;
-  }
-  .row-label{
-    width: 22px;
-    flex: 0 0 22px;
-    font-size: 12px;
-  }
-  .pass-gap{ width: 24px; }
-  .hall-inner{ width: max(680px, 100%); } /* чуть уже, чтобы влезало */
-}
-
-/* Подписи “Ряд N • ХХ грн” под каждым рядом — если используешь */
-.row-price-list{ margin-top:14px; }
-.row-price{
-  display:flex; align-items:center; gap:8px;
-  font-size:14px; color:#0f172a; padding:6px 0; border-bottom:1px dotted #e5e7eb;
-}
-.row-price .dots{ flex:1 1 auto; border-bottom:1px dotted #e5e7eb; height:0; }
