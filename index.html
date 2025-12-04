@@ -3,45 +3,64 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Театральні квитки онлайн</title>
+  <title>Онлайн-продаж театральних квитків</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- Шапка -->
   <div id="site-header"></div>
   <script type="module" src="/scripts/include.js"></script>
 
-  <!-- MAIN CONTENT -->
   <main class="main">
 
+    <!-- HERO -->
     <section class="hero">
       <div class="container hero__inner">
-
-        <div class="hero__content">
-          <h1 class="hero__title">Театральні квитки онлайн</h1>
-
+        <div>
+          <h1 class="hero__title">Онлайн-продаж театральних квитків</h1>
           <p class="hero__subtitle">
-            Універсальний шаблон продажу квитків. 
-            Підходить для одного театру або мультиплатформи.
+            Універсальний шаблон сайту для театрів та квиткових сервісів.
+            Оберіть виставу, виберіть місця на схемі залу та оплатіть квитки онлайн.
           </p>
-
           <div class="hero__actions">
-            <a href="/afisha.html" class="btn btn--primary">Перейти до афіші</a>
-            <a href="/theatres.html" class="btn btn--secondary">Переглянути театри</a>
+            <a class="btn btn--primary" href="/afisha.html">Перейти до афіші</a>
+            <a class="btn btn--secondary" href="/howto.html">Як це працює</a>
           </div>
         </div>
 
         <div class="hero__media">
-          <img src="/images/logo-placeholder.png" alt="Логотип" class="hero__image">
+          <img
+            src="/images/logo-placeholder.png"
+            alt="Логотип сервісу"
+            class="hero__image"
+          />
         </div>
+      </div>
+    </section>
 
+    <!-- Можно добавить блок «Переваги» або оставить пусто -->
+    <section class="section">
+      <div class="container content">
+        <h2>Як використовувати цей шаблон</h2>
+        <p>
+          Це універсальний шаблон сайту для онлайн-продажу квитків. Ви можете:
+        </p>
+        <ul>
+          <li>налаштувати афішу через файл <code>/data/afisha.json</code>;</li>
+          <li>додати описи вистав у <code>/data/shows/&lt;slug&gt;.json</code>;</li>
+          <li>налаштувати схему залу у <code>/spectacles/hall.html</code>;</li>
+          <li>змінити реквізити та юридичні документи на свої дані.</li>
+        </ul>
+        <p>
+          У фінальному проєкті замініть текст, логотипи та контакти на дані конкретного театру або сервісу.
+        </p>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
+  <!-- Підвал -->
   <div id="site-footer"></div>
 
 </body>
