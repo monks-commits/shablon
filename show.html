@@ -36,7 +36,8 @@
     }
     const s = await r.json();
 
-    const poster = s.poster ? '/' + s.poster.replace(/^\/+/, '') : '';
+    const poster = s.poster ? s.poster.replace(/^\/+/, '') : '';
+
     const place  = [s.city, s.theatre, s.stage].filter(Boolean).join(' • ');
     const title  = s.title || '';
 
