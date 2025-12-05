@@ -4,13 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Вибір місць — Театральні квитки онлайн</title>
-  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- ВАЖНО: из подпапки → ../styles.css -->
+  <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
 
-  <!-- Шапка -->
+  <!-- Шапка (также из подпапки) -->
   <div id="site-header"></div>
-  <script type="module" src="/scripts/include.js"></script>
+  <script type="module" src="../scripts/include.js"></script>
 
   <main class="main">
 
@@ -93,9 +95,9 @@
 
       let showInfo = null;
 
-      // Підтягуємо опис показу з /data/afisha.json (якщо є)
+      // ⚠ тут путь тоже из подпапки → ../data/afisha.json
       try {
-        const r = await fetch("/data/afisha.json", { cache: "no-store" });
+        const r = await fetch("../data/afisha.json", { cache: "no-store" });
         if (r.ok) {
           const items = await r.json();
           showInfo = (items || []).find(x => (x.show || "") === slug) || null;
@@ -118,7 +120,6 @@
       selShowEl.textContent   = "Вистава: " + title;
 
       // ----- Демонстраційна схема залу -----
-      // 10 рядів × 12 місць, ціна змінюється від ряду
       const rows = [
         { row: 1, seats: 12, price: 300 },
         { row: 2, seats: 12, price: 300 },
@@ -177,7 +178,7 @@
       rowPricesEl.innerHTML = buildRowPricesHTML();
 
       // ----- Логіка вибору місць -----
-      const selected = new Map(); // key: "row-seat" -> {row, seat, price}
+      const selected = new Map(); // key: "row-seat"
 
       function updateSummary() {
         const seatsArr = Array.from(selected.values())
@@ -225,7 +226,7 @@
         updateSummary();
       });
 
-      // ----- Переход на оформлення (order.html) -----
+      // ----- Перехід на сторінку замовлення -----
       toOrderBtn.addEventListener("click", () => {
         if (selected.size === 0) return;
 
@@ -238,19 +239,18 @@
 
         const total = seatsArr.reduce((sum, s) => sum + s.price, 0);
 
-        const url = new URL(location.origin + "/order.html");
-        url.searchParams.set("show", slug);
-        url.searchParams.set("title", title);
-        url.searchParams.set("seats", seatsParam);
-        url.searchParams.set("amount", String(total));
+        const params = new URLSearchParams();
+        params.set("show", slug);
+        params.set("title", title);
+        params.set("seats", seatsParam);
+        params.set("amount", String(total));
 
-        location.href = url.toString();
+        // из папки spectacles → ../order.html
+        location.href = "../order.html?" + params.toString();
       });
 
-      // На всякий случай — инициализация
       updateSummary();
     })();
   </script>
-
 </body>
 </html>
