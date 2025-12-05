@@ -3,112 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Замовлення квитків — Театральні квитки онлайн</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <title>Замовлення квитків</title>
+
+  <!-- относительный путь -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- Шапка -->
   <div id="site-header"></div>
-  <script type="module" src="/scripts/include.js"></script>
 
   <main class="main">
-
-    <section class="page-header">
-      <div class="container page-header__inner">
-        <h1 class="page-title">Дані для замовлення</h1>
-        <p id="show-line" class="page-subtitle meta"></p>
-      </div>
-    </section>
-
     <section class="section">
       <div class="container">
-        <form id="orderForm" class="card order-form">
+        <h1>Дані для замовлення</h1>
+        <p id="show-line" class="meta"></p>
 
+        <form id="orderForm" class="card" style="max-width:520px">
           <div class="form-row">
-            <label for="fullname">Ім’я та Прізвище</label>
-            <input
-              type="text"
-              id="fullname"
-              name="fullname"
-              required
-              placeholder="Іван Іванов"
-            />
+            <label>Ім’я та Прізвище</label>
+            <input type="text" name="fullname" required placeholder="Іван Іванов" />
           </div>
-
           <div class="form-row">
-            <label for="email">Електронна пошта</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              placeholder="name@example.com"
-            />
+            <label>Електронна пошта</label>
+            <input type="email" name="email" required placeholder="name@example.com" />
           </div>
-
           <div class="form-row">
-            <label for="phone">Телефон</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              required
-              placeholder="+380..."
-            />
+            <label>Телефон</label>
+            <input type="tel" name="phone" required placeholder="+380..." />
           </div>
 
           <label class="checkbox">
             <input type="checkbox" name="agree" required />
-            <span>
-              Погоджуюсь з публічною офертою та умовами повернення.
-              Перед фінальним запуском сайту вставте тут посилання на
-              <a href="/public-offer.html" target="_blank">публічний договір (оферту)</a>.
-            </span>
+            Погоджуюсь з публічною офертою та умовами повернення.
+            Перед фінальним запуском сайту вставте тут посилання на
+            <a href="public-offer.html" target="_blank">публічний договір (оферту)</a>.
           </label>
 
-          <button type="submit" class="btn btn--primary" id="payBtn">
+          <button type="submit" class="button-primary" id="payBtn">
             Перейти до оплати
           </button>
         </form>
       </div>
     </section>
-
   </main>
 
-  <!-- Підвал -->
   <div id="site-footer"></div>
+  <script type="module" src="scripts/include.js"></script>
 
   <script>
-    // Параметри з URL (передає їх hall.html)
+    // ---- берем параметры из URL (передал их hall.html) ----
     const p = new URLSearchParams(location.search);
-    const show = p.get("show") || "";
-    const title = p.get("title") || "";
-    const seats = p.get("seats") || "";
+    const show   = p.get("show")   || "";
+    const title  = p.get("title")  || "";
+    const seats  = p.get("seats")  || "";
     const amount = p.get("amount") || "0";
     const order_id = p.get("order_id") || ("ORD-" + Date.now());
 
-    const showLineEl = document.getElementById("show-line");
-    if (showLineEl) {
-      showLineEl.textContent =
-        `Вистава: ${title || show} • Місця: ${seats} • Сума: ${amount} грн`;
-    }
+    document.getElementById("show-line").textContent =
+      `Вистава: ${title || show} • Місця: ${seats} • Сума: ${amount} грн`;
 
-    // На сабміт переходимо на checkout.html з усіма даними в query
+    // ---- при сабміті переходимо на checkout.html у ТОМ ЖЕ каталозі (/shablon/) ----
     document.getElementById("orderForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const fd = new FormData(e.currentTarget);
-      const fullname = (fd.get("fullname") || "").toString().trim();
-      const email = (fd.get("email") || "").toString().trim();
-      const phone = (fd.get("phone") || "").toString().trim();
+      const fullname = (fd.get("fullname") || "").trim();
+      const email    = (fd.get("email")    || "").trim();
+      const phone    = (fd.get("phone")    || "").trim();
 
-      const u = new URL(location.origin + "/checkout.html");
+      // относительный URL от текущей страницы
+      const u = new URL("checkout.html", window.location.href);
       u.searchParams.set("show", show);
       u.searchParams.set("title", title);
       u.searchParams.set("seats", seats);
       u.searchParams.set("amount", amount);
       u.searchParams.set("order_id", order_id);
-      u.searchParams.set("fullname", fullname);
+      u.searchParams.set("name", fullname);
       u.searchParams.set("email", email);
       u.searchParams.set("phone", phone);
 
@@ -116,5 +84,33 @@
     });
   </script>
 
+  <style>
+    .card {
+      padding:16px;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#fff;
+      box-shadow:0 8px 20px rgba(15,23,42,0.05);
+    }
+    .form-row {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-bottom:12px;
+    }
+    .form-row input {
+      padding:10px 12px;
+      border:1px solid #d1d5db;
+      border-radius:8px;
+    }
+    .checkbox {
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin:12px 0;
+      font-size:14px;
+    }
+    .checkbox a { color:#155EEF; }
+  </style>
 </body>
 </html>
