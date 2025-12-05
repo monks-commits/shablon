@@ -62,15 +62,17 @@
     const res = await fetch('data/afisha.json', {cache:'no-store'});
     const items = res.ok ? await res.json() : [];
 
-    function cardHTML(s){
-      const poster = s.poster ? '/' + s.poster.replace(/^\/+/, '') : '';
-      const show   = encodeURIComponent(s.show);
-      return `
-        <article class="card">
-          <img class="poster"
-               src="${poster}"
-               alt="${s.title || ''}"
-               onerror="this.style.display='none'">
+   function cardHTML(s){
+  // относительный путь внутри /shablon
+  const poster = s.poster ? s.poster.replace(/^\/+/, '') : '';
+  const show   = encodeURIComponent(s.show);
+  return `
+    <article class="card">
+      <img class="poster"
+           src="${poster}"
+           alt="${s.title || ''}"
+           onerror="this.style.display='none'">
+
           <div><strong>${s.title || ''}</strong></div>
           <div class="meta">
             ${[s.date, s.time].filter(Boolean).join(' • ')}
