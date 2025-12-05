@@ -2,63 +2,88 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>Дані для замовлення — Ваш Адмін</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/styles.css" />
-  <script type="module" src="/scripts/include.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Замовлення квитків — Шаблон квиткового сервісу</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div id="site-header"></div>
+  <div id="site-header"></div>
 
-<main class="container" style="max-width:700px; margin:40px auto;">
-  <h1>Дані для замовлення</h1>
+  <main class="main">
+    <section class="section">
+      <div class="container">
+        <h1>Дані для замовлення</h1>
+        <p id="show-line" class="meta"></p>
 
-  <p id="order-info"></p>
+        <form id="orderForm" class="card" style="max-width:520px">
+          <div class="form-row">
+            <label>Ім’я та Прізвище</label>
+            <input type="text" name="fullname" required placeholder="Іван Іванов" />
+          </div>
+          <div class="form-row">
+            <label>Електронна пошта</label>
+            <input type="email" name="email" required placeholder="name@example.com" />
+          </div>
+          <div class="form-row">
+            <label>Телефон</label>
+            <input type="tel" name="phone" required placeholder="+380..." />
+          </div>
 
-  <form id="order-form">
-    <label>Ім’я та Прізвище</label>
-    <input name="name" class="form-control" required>
+          <label class="checkbox">
+            <input type="checkbox" name="agree" required />
+            Погоджуюсь з публічною офертою та умовами повернення.
+          </label>
 
-    <label>Електронна пошта</label>
-    <input name="email" type="email" class="form-control" required>
+          <button type="submit" class="button-primary" id="payBtn">
+            Перейти до оплати
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
 
-    <label>Телефон</label>
-    <input name="phone" class="form-control" required>
+  <div id="site-footer"></div>
+  <script type="module" src="scripts/include.js"></script>
 
-    <label>
-      <input type="checkbox" required>
-      Погоджуюсь з публічною офертою та умовами повернення
-    </label>
+  <script>
+    const p = new URLSearchParams(location.search);
+    const show   = p.get("show")   || "";
+    const title  = p.get("title")  || "";
+    const seatsRaw = p.get("seats")|| "";
+    const amount = p.get("amount") || "0";
+    const order_id = p.get("order_id") || ("ORD-" + Date.now());
 
-    <button class="btn btn-primary" style="margin-top:16px;">
-      Перейти до оплати
-    </button>
-  </form>
-</main>
+    const seatsPretty = seatsRaw
+      .split(",")
+      .filter(Boolean)
+      .map(x => {
+        const [r,s] = x.split("_");
+        return `Ряд ${r}, місце ${s}`;
+      })
+      .join("; ");
 
-<div id="site-footer"></div>
+    document.getElementById("show-line").textContent =
+      `Вистава: ${title || show} • ${seatsPretty} • Сума: ${amount} грн`;
 
-<script>
-const p = new URLSearchParams(location.search);
+    document.getElementById("orderForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.currentTarget);
+      const fullname = String(fd.get("fullname") || "").trim();
+      const email    = String(fd.get("email")    || "").trim();
+      const phone    = String(fd.get("phone")    || "").trim();
 
-const show = p.get("show");
-const title = p.get("title");
-const seatsRaw = p.get("seats") || "";
-const amount = p.get("amount") || 0;
+      const url = new URL("checkout.html", location.href);
+      url.searchParams.set("show", show);
+      url.searchParams.set("title", title);
+      url.searchParams.set("seats", seatsRaw);
+      url.searchParams.set("amount", amount);
+      url.searchParams.set("order_id", order_id);
+      url.searchParams.set("name", fullname);
+      url.searchParams.set("email", email);
+      url.searchParams.set("phone", phone);
 
-const seats = seatsRaw.split(",").map(x=>{
-  const [r,s] = x.split("_");
-  return `Ряд ${r}, місце ${s}`;
-}).join("; ");
-
-document.getElementById("order-info").textContent =
-  `Вистава: ${title || show} • ${seats} • Сума: ${amount} грн`;
-
-document.getElementById("order-form").onsubmit = (e) => {
-  e.preventDefault();
-  location.href =
-    `/checkout.html?show=${encodeURIComponent(show)}&title=${encodeURIComponent(title)}&seats=${encodeURIComponent(seatsRaw)}&amount=${amount}`;
-};
-</script>
+      location.href = url.toString();
+    });
+  </script>
 </body>
 </html>
