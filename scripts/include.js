@@ -12,4 +12,4 @@ async function loadFragment(targetId, url) {
 }
 
 loadFragment("site-header", "header.html");
-loadFragment("site-footer", "footer.html");
+loadFragment("site-footer", "footer.html"); 
