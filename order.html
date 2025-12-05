@@ -2,115 +2,63 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Замовлення квитків</title>
-
-  <!-- относительный путь -->
-  <link rel="stylesheet" href="styles.css" />
+  <title>Дані для замовлення — Ваш Адмін</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/scripts/include.js"></script>
 </head>
 <body>
-  <div id="site-header"></div>
+<div id="site-header"></div>
 
-  <main class="main">
-    <section class="section">
-      <div class="container">
-        <h1>Дані для замовлення</h1>
-        <p id="show-line" class="meta"></p>
+<main class="container" style="max-width:700px; margin:40px auto;">
+  <h1>Дані для замовлення</h1>
 
-        <form id="orderForm" class="card" style="max-width:520px">
-          <div class="form-row">
-            <label>Ім’я та Прізвище</label>
-            <input type="text" name="fullname" required placeholder="Іван Іванов" />
-          </div>
-          <div class="form-row">
-            <label>Електронна пошта</label>
-            <input type="email" name="email" required placeholder="name@example.com" />
-          </div>
-          <div class="form-row">
-            <label>Телефон</label>
-            <input type="tel" name="phone" required placeholder="+380..." />
-          </div>
+  <p id="order-info"></p>
 
-          <label class="checkbox">
-            <input type="checkbox" name="agree" required />
-            Погоджуюсь з публічною офертою та умовами повернення.
-            Перед фінальним запуском сайту вставте тут посилання на
-            <a href="public-offer.html" target="_blank">публічний договір (оферту)</a>.
-          </label>
+  <form id="order-form">
+    <label>Ім’я та Прізвище</label>
+    <input name="name" class="form-control" required>
 
-          <button type="submit" class="button-primary" id="payBtn">
-            Перейти до оплати
-          </button>
-        </form>
-      </div>
-    </section>
-  </main>
+    <label>Електронна пошта</label>
+    <input name="email" type="email" class="form-control" required>
 
-  <div id="site-footer"></div>
-  <script type="module" src="scripts/include.js"></script>
+    <label>Телефон</label>
+    <input name="phone" class="form-control" required>
 
-  <script>
-    // ---- берем параметры из URL (передал их hall.html) ----
-    const p = new URLSearchParams(location.search);
-    const show   = p.get("show")   || "";
-    const title  = p.get("title")  || "";
-    const seats  = p.get("seats")  || "";
-    const amount = p.get("amount") || "0";
-    const order_id = p.get("order_id") || ("ORD-" + Date.now());
+    <label>
+      <input type="checkbox" required>
+      Погоджуюсь з публічною офертою та умовами повернення
+    </label>
 
-    document.getElementById("show-line").textContent =
-      `Вистава: ${title || show} • Місця: ${seats} • Сума: ${amount} грн`;
+    <button class="btn btn-primary" style="margin-top:16px;">
+      Перейти до оплати
+    </button>
+  </form>
+</main>
 
-    // ---- при сабміті переходимо на checkout.html у ТОМ ЖЕ каталозі (/shablon/) ----
-    document.getElementById("orderForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.currentTarget);
-      const fullname = (fd.get("fullname") || "").trim();
-      const email    = (fd.get("email")    || "").trim();
-      const phone    = (fd.get("phone")    || "").trim();
+<div id="site-footer"></div>
 
-      // относительный URL от текущей страницы
-      const u = new URL("checkout.html", window.location.href);
-      u.searchParams.set("show", show);
-      u.searchParams.set("title", title);
-      u.searchParams.set("seats", seats);
-      u.searchParams.set("amount", amount);
-      u.searchParams.set("order_id", order_id);
-      u.searchParams.set("name", fullname);
-      u.searchParams.set("email", email);
-      u.searchParams.set("phone", phone);
+<script>
+const p = new URLSearchParams(location.search);
 
-      location.href = u.toString();
-    });
-  </script>
+const show = p.get("show");
+const title = p.get("title");
+const seatsRaw = p.get("seats") || "";
+const amount = p.get("amount") || 0;
 
-  <style>
-    .card {
-      padding:16px;
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      background:#fff;
-      box-shadow:0 8px 20px rgba(15,23,42,0.05);
-    }
-    .form-row {
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      margin-bottom:12px;
-    }
-    .form-row input {
-      padding:10px 12px;
-      border:1px solid #d1d5db;
-      border-radius:8px;
-    }
-    .checkbox {
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      margin:12px 0;
-      font-size:14px;
-    }
-    .checkbox a { color:#155EEF; }
-  </style>
+const seats = seatsRaw.split(",").map(x=>{
+  const [r,s] = x.split("_");
+  return `Ряд ${r}, місце ${s}`;
+}).join("; ");
+
+document.getElementById("order-info").textContent =
+  `Вистава: ${title || show} • ${seats} • Сума: ${amount} грн`;
+
+document.getElementById("order-form").onsubmit = (e) => {
+  e.preventDefault();
+  location.href =
+    `/checkout.html?show=${encodeURIComponent(show)}&title=${encodeURIComponent(title)}&seats=${encodeURIComponent(seatsRaw)}&amount=${amount}`;
+};
+</script>
 </body>
 </html>
