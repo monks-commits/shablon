@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <title>Квиток — онлайн-продаж</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Можно подключить общий стиль, чтобы шрифт был такой же -->
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    /* Базовая страница под печать A4 */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #e5e7eb;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .ticket-page {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 16px;
+    }
+    .ticket {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 1.8fr 1.1fr;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 720px) {
+      .ticket {
+        grid-template-columns: 1fr;
+      }
+    }
+    .ticket-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .ticket-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      object-fit: contain;
+      background: #f3f4f6;
+      flex-shrink: 0;
+    }
+    .ticket-theatre {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    .ticket-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      color: #111827;
+    }
+    .ticket-meta {
+      font-size: 14px;
+      color: #4b5563;
+      margin: 3px 0;
+    }
+    .ticket-meta span {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      font-size: 12px;
+      color: #1d4ed8;
+      font-weight: 600;
+    }
+    .ticket-seats {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px dashed #e5e7eb;
+      font-size: 14px;
+      color: #111827;
+    }
+    .ticket-seats strong {
+      font-weight: 600;
+    }
+
+    .ticket-footer-text {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    /* Правая колонка — QR + детали */
+    .ticket-right {
+      border-left: 1px dashed #e5e7eb;
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+    @media (max-width: 720px) {
+      .ticket-right {
+        border-left: none;
+        border-top: 1px dashed #e5e7eb;
+        padding-left: 0;
+        padding-top: 14px;
+        margin-top: 6px;
+        width: 100%;
+      }
+    }
+
+    .qr-box {
+      width: 150px;
+      height: 150px;
+      border-radius: 16px;
+      border: 1px dashed #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      background: #f9fafb;
+      font-size: 11px;
+      text-align: center;
+      color: #6b7280;
+      padding: 8px;
+    }
+
+    .ticket-code {
+      font-size: 12px;
+      color: #4b5563;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .ticket-code b {
+      font-weight: 700;
+    }
+
+    .price-box {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 14px;
+      color: #111827;
+    }
+    .price-box b {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Кнопки управления (для демо/печати, на реальном бою можно скрыть) */
+    .controls {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      font-size: 14px;
+    }
+    .btn-print {
+      background: #2563eb;
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-print.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+      .ticket-page {
+        margin: 0;
+        padding: 0;
+      }
+      .controls {
+        display: none;
+      }
+      .ticket {
+        box-shadow: none;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ticket-page">
+    <div class="ticket">
+      <!-- Левая часть: театр, спектакль, дата, место -->
+      <div>
+        <div class="ticket-header">
+          <img id="t-logo" class="ticket-logo" src="" alt="Логотип театру" onerror="this.style.display='none'">
+          <div>
+            <div id="t-theatre" class="ticket-theatre">ТЕАТР</div>
+            <h1 id="t-title" class="ticket-title">Назва вистави</h1>
+          </div>
+        </div>
+
+        <p id="t-city" class="ticket-meta"></p>
+        <p id="t-datetime" class="ticket-meta"></p>
+        <p id="t-stage" class="ticket-meta"></p>
+
+        <div class="ticket-seats">
+          <div><strong>Сектор:</strong> <span id="t-zone">—</span></div>
+          <div><strong>Ряд і місце:</strong> <span id="t-place">—</span></div>
+        </div>
+
+        <p class="ticket-footer-text">
+          Квиток необхідно пред’явити при вході до залу у друкованому вигляді або на екрані телефону.
+          Адміністрація театру має право звірити квиток з документом, що посвідчує особу.
+          Повернення та обмін квитків — згідно з правилами театру.
+        </p>
+      </div>
+
+      <!-- Правая часть: QR, код, ціна -->
+      <div class="ticket-right">
+        <div>
+          <div class="qr-box" id="qr-box">
+            QR-код буде згенеровано на бою<br>
+            (для демо достатньо цього блоку)
+          </div>
+          <div id="t-code" class="ticket-code"></div>
+        </div>
+
+        <div class="price-box">
+          <div>Вартість квитка</div>
+          <div><b id="t-price">— грн</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кнопки управления (для демо) -->
+    <div class="controls">
+      <button class="btn-print" onclick="window.print()">Друкувати</button>
+      <button class="btn-print secondary" onclick="history.back()">Назад</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const p = new URLSearchParams(location.search);
+
+      // Параметри з URL
+      const theatre = p.get("theatre") || "Театр ім. Т. Г. Шевченка";
+      const title   = p.get("title")   || "Назва вистави";
+      const city    = p.get("city")    || "Кривий Ріг";
+      const stage   = p.get("stage")   || "Велика сцена";
+      const date    = p.get("date")    || "";
+      const time    = p.get("time")    || "";
+      const zone    = p.get("zone")    || "Партер";
+
+      const row     = p.get("row");
+      const seat    = p.get("seat");
+      const seatLabel = p.get("seat_label") ||
+        (row && seat ? `Ряд ${row}, місце ${seat}` : "—");
+
+      const price   = p.get("price")   || "";
+      const orderId = p.get("order_id") || "";
+      const ticketId= p.get("ticket_id") || "";
+
+      const logo    = p.get("logo") || "/images/logo-placeholder.png";
+
+      // Подставляем текст
+      document.getElementById("t-theatre").textContent = theatre.toUpperCase();
+      document.getElementById("t-title").textContent   = title;
+      document.getElementById("t-city").textContent    = city ? `Місто: ${city}` : "";
+      document.getElementById("t-stage").textContent   = stage ? `Сцена / зал: ${stage}` : "";
+      document.getElementById("t-zone").textContent    = zone;
+      document.getElementById("t-place").textContent   = seatLabel;
+
+      const dtParts = [];
+      if (date) dtParts.push(date);
+      if (time) dtParts.push(time);
+      document.getElementById("t-datetime").textContent =
+        dtParts.length ? `Дата і час: ${dtParts.join(" • ")}` : "";
+
+      document.getElementById("t-price").textContent = price ? `${price} грн` : "— грн";
+
+      const codeEl = document.getElementById("t-code");
+      if (orderId || ticketId) {
+        codeEl.innerHTML =
+          `Номер замовлення: <b>${orderId || "—"}</b><br>` +
+          (ticketId ? `ID квитка: <b>${ticketId}</b>` : "");
+      } else {
+        codeEl.textContent = "";
+      }
+
+      const logoImg = document.getElementById("t-logo");
+      if (logo) {
+        // относительный путь «/...» будет браться от корня сайту
+        logoImg.src = logo.startsWith("/") ? logo : "/" + logo.replace(/^\/+/, "");
+      }
+    })();
+  </script>
+</body>
+</html>
